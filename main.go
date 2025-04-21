@@ -1,15 +1,27 @@
 package main
 
-import "net/http"
+import (
+	"log"
+	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
+)
 
-// /asset 의 경로의 파일들을 파일서빙하는 서버
+func assetHandler(w http.ResponseWriter, r *http.Request) {
+	assetPath := strings.TrimPrefix(r.URL.Path, "/asset/")
+	if strings.HasSuffix(assetPath, ".png") || strings.HasSuffix(assetPath, ".jpeg") || strings.HasSuffix(assetPath, ".jpg") {
+		webpPath := filepath.Join("./asset", strings.TrimSuffix(assetPath, filepath.Ext(assetPath))+".webp")
+		if _, err := os.Stat(webpPath); err == nil {
+			log.Printf("%s -> %s", assetPath, webpPath)
+			http.ServeFile(w, r, webpPath)
+			return
+		}
+	}
+	http.ServeFile(w, r, filepath.Join("./asset", assetPath))
+}
 
 func main() {
-	// /asset 경로의 파일들을 서빙하는 서버를 만듭니다.
-	// http.FileServer를 사용하여 파일을 서빙합니다.
-	// http.StripPrefix를 사용하여 /asset 경로를 제거합니다.
-	// http.ListenAndServe를 사용하여 서버를 실행합니다.
-
-	http.Handle("/asset/", http.StripPrefix("/asset/", http.FileServer(http.Dir("./asset"))))
+	http.HandleFunc("/asset/", assetHandler)
 	http.ListenAndServe(":8080", nil)
 }
