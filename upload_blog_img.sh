@@ -22,7 +22,7 @@ for file in $files; do
     echo "- ![img-00](https://homin.dev/asset/$path)"
 done
 
-git commit -m "update blog img"
-git push
+# git commit -m "update blog img"
+# git push
 
-./update_blog_img.sh latest
+# ./update_blog_img.sh latest

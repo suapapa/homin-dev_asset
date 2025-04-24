@@ -36,6 +36,11 @@ func main() {
 					return
 				}
 			}
+		} else if strings.HasSuffix(path, ".css") {
+			// file cache CSS ruins following CSS's content type in response
+			// - Content-Type: text/css; charset=utf-8
+			http.ServeFile(w, r, path)
+			return
 		}
 
 		if err := cache.WriteFile(w, path); err != nil {
