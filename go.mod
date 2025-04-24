@@ -2,4 +2,4 @@ module github.com/suapapa/homin-dev_asset
 
 go 1.24.2
 
-require github.com/victorspringer/http-cache v0.0.0-20240523143319-7d9f48f8ab91
+require github.com/gokyle/filecache v0.0.0-20220803205700-e8a4791094b7

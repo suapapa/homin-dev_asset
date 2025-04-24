@@ -7,46 +7,62 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-	"time"
 
-	cache "github.com/victorspringer/http-cache"
-	"github.com/victorspringer/http-cache/adapter/memory"
+	"github.com/gokyle/filecache"
 )
 
-func assetHandler(w http.ResponseWriter, r *http.Request) {
-	assetPath := strings.TrimPrefix(r.URL.Path, "/asset/")
-	if strings.HasSuffix(assetPath, ".png") || strings.HasSuffix(assetPath, ".jpeg") || strings.HasSuffix(assetPath, ".jpg") {
-		webpPath := filepath.Join("./asset", strings.TrimSuffix(assetPath, filepath.Ext(assetPath))+".webp")
-		if _, err := os.Stat(webpPath); err == nil {
-			// log.Printf("%s -> %s", assetPath, webpPath)
-			http.ServeFile(w, r, webpPath)
-			return
+func main() {
+	cache := filecache.NewDefaultCache()
+	cache.MaxSize = 10 * filecache.Megabyte
+	cache.Start()
+
+	fileServer := func(w http.ResponseWriter, r *http.Request) {
+		path := r.URL.Path
+		if len(path) > 1 {
+			path = path[1:]
+		} else {
+			path = "."
+		}
+
+		path = strings.TrimPrefix(path, "/asset/")
+		if strings.HasSuffix(path, ".png") || strings.HasSuffix(path, ".jpeg") || strings.HasSuffix(path, ".jpg") {
+			tempPath := filepath.Join("./asset", strings.TrimSuffix(path, filepath.Ext(path))+".webp")
+			if _, err := os.Stat(tempPath); err == nil {
+				// log.Printf("%s -> %s", path, webpPath)
+				// http.ServeFile(w, r, webpPath)
+				// return
+				path = tempPath
+			}
+		}
+
+		err := cache.WriteFile(w, path)
+		if err == nil {
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		} else if err == filecache.ItemIsDirectory {
+			http.ServeFile(w, r, path)
 		}
 	}
-	http.ServeFile(w, r, filepath.Join("./asset", assetPath))
-}
 
-func main() {
-	memcached, err := memory.NewAdapter(
-		memory.AdapterWithAlgorithm(memory.LRU),
-		memory.AdapterWithCapacity(10000000),
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
+	// memcached, err := memory.NewAdapter(
+	// 	memory.AdapterWithAlgorithm(memory.LRU),
+	// 	memory.AdapterWithCapacity(10_000_000),
+	// )
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
-	cacheClient, err := cache.NewClient(
-		cache.ClientWithAdapter(memcached),
-		cache.ClientWithTTL(10*time.Minute),
-		cache.ClientWithRefreshKey("opn"),
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
+	// cacheClient, err := cache.NewClient(
+	// 	cache.ClientWithAdapter(memcached),
+	// 	cache.ClientWithTTL(10*time.Minute),
+	// 	cache.ClientWithRefreshKey("opn"),
+	// )
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
-	handler := cacheClient.Middleware(http.HandlerFunc(assetHandler))
+	// handler := cacheClient.Middleware(http.HandlerFunc(assetHandler))
 
-	http.Handle("/asset/", handler)
+	http.Handle("/asset/", http.HandlerFunc(fileServer))
 	fmt.Println("Listening on port 8080")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal(err)
