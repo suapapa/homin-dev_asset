@@ -24,9 +24,10 @@ func main() {
 			path = "."
 		}
 
+		var tempPath string
 		path = strings.TrimPrefix(path, "/asset/")
 		if strings.HasSuffix(path, ".png") || strings.HasSuffix(path, ".jpeg") || strings.HasSuffix(path, ".jpg") {
-			tempPath := filepath.Join("./asset", strings.TrimSuffix(path, filepath.Ext(path))+".webp")
+			tempPath = filepath.Join("./asset", strings.TrimSuffix(path, filepath.Ext(path))+".webp")
 			if _, err := os.Stat(tempPath); err == nil {
 				// log.Printf("%s -> %s", path, webpPath)
 				// http.ServeFile(w, r, webpPath)
@@ -35,11 +36,11 @@ func main() {
 			}
 		}
 
-		err := cache.WriteFile(w, path)
+		err := cache.WriteFile(w, tempPath)
 		if err == nil {
 			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		} else if err == filecache.ItemIsDirectory {
-			http.ServeFile(w, r, path)
+			http.ServeFile(w, r, tempPath)
 		}
 	}
 
