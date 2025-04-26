@@ -3,7 +3,8 @@
 set -e
 
 CR=icn.vultrcr.com/homincr1
-IMAGE_TAG=$CR/asset:$1 
+IMAGE_VERSION=latest # $1
+IMAGE_TAG=$CR/asset:$IMAGE_VERSION 
 docker buildx build --platform linux/amd64 -t $IMAGE_TAG .
 docker push $IMAGE_TAG
 
@@ -17,3 +18,4 @@ fi
 # git tag -a $1 -m "add tag for $1"
 # git push --tags
 
+kubectl rollout restart deployment asset
