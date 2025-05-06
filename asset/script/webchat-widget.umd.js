@@ -133,6 +133,7 @@ Please report this to https://github.com/markedjs/marked.`,l){const c="<p>An err
         padding: 8px;
         border: 1px solid #ddd;
         border-radius: 4px;
+        font-size: 16px !important;
     }
     .chatbot-send-btn {
         padding: 8px 16px;
@@ -263,6 +264,7 @@ Please report this to https://github.com/markedjs/marked.`,l){const c="<p>An err
   padding: 0.5rem;
   background: #fafafa !important;
   color: black !important;
+  font-size: 16px !important;
 }
 
 .chatbot-send-btn {
