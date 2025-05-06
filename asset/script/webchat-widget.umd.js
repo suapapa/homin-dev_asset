@@ -288,4 +288,19 @@ Please report this to https://github.com/markedjs/marked.`,l){const c="<p>An err
   font-size: 24px;
   transition: bottom 0.2s;
 }
-        `,l.appendChild(a)}return o}window.renderWebchatWidget=u=>{const l=u||gh();cd.createRoot(l).render(Fe.jsx(rd.StrictMode,{children:Fe.jsx(mh,{})}))},document.getElementById("webchat-widget-container")||window.renderWebchatWidget()});
+
+@media (max-width: 600px) {
+  .chatbot-widget {
+    width: 92vw !important;
+    max-width: 380px !important;
+    min-width: 0 !important;
+    height: 70vh !important;
+    max-height: 80vh !important;
+    border-radius: 16px !important;
+    padding: 8px !important;
+    margin: 0 auto 8px auto !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+  }
+}
+`,l.appendChild(a)}return o}window.renderWebchatWidget=u=>{const l=u||gh();cd.createRoot(l).render(Fe.jsx(rd.StrictMode,{children:Fe.jsx(mh,{})}))},document.getElementById("webchat-widget-container")||window.renderWebchatWidget()});
