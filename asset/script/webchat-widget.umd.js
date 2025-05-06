@@ -165,14 +165,19 @@ Please report this to https://github.com/markedjs/marked.`,l){const c="<p>An err
             left: 0;
             width: 100vw;
             max-width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
         }
         .chatbot-widget {
-            width: 100vw;
-            height: 60vh;
-            max-width: 100vw;
+            width: 95vw;
+            height: 70vh;
+            max-width: 98vw;
             max-height: 80vh;
-            border-radius: 0 0 8px 8px;
-            padding: 10px;
+            border-radius: 16px;
+            padding: 8px;
+            margin-bottom: 8px;
+            box-sizing: border-box;
         }
         .chatbot-toggle-btn {
             bottom: 16px;
