@@ -112,6 +112,7 @@ Please report this to https://github.com/markedjs/marked.`,l){const c="<p>An err
         margin-bottom: 0 !important;
         margin-left: 0 !important;
         margin-right: 0 !important;
+        text-align: left !important;
     }
     #webchat-widget-container {
         position: fixed;
