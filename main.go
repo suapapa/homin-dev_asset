@@ -18,13 +18,14 @@ func main() {
 
 	fileServer := func(w http.ResponseWriter, r *http.Request) {
 		path := r.URL.Path
-		if len(path) > 1 {
-			path = path[1:] // trim leading slash
-		} else {
-			path = "."
-		}
+		log.Println(path)
+		// if len(path) > 1 {
+		// 	path = path[1:] // trim leading slash
+		// } else {
+		// 	path = "."
+		// }
 
-		path = strings.TrimPrefix(path, "asset/")
+		path = strings.TrimPrefix(path, "/")
 		path = filepath.Join("./asset", path)
 		if strings.HasSuffix(path, ".png") || strings.HasSuffix(path, ".jpeg") || strings.HasSuffix(path, ".jpg") {
 			webpPath := strings.TrimSuffix(path, filepath.Ext(path)) + ".webp"
@@ -49,7 +50,7 @@ func main() {
 		}
 	}
 
-	http.Handle("/asset/", http.HandlerFunc(fileServer))
+	http.Handle("/", http.HandlerFunc(fileServer))
 	fmt.Println("Listening on port 8080")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		log.Fatal(err)
